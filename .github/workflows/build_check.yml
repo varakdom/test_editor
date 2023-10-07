@@ -1,0 +1,36 @@
+name: Perform build checks and tests
+
+on:
+  push:
+    branches:
+      - production
+      - main
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Install Dependencies
+        run: sudo apt-get update && sudo apt-get install --no-install-recommends pkg-config libx11-dev libasound2-dev libudev-dev
+
+      - uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          override: true # components: rustfmt, clippy
+
+      - name: Check code
+        run: cargo check # cargo update && --lib --examples
+
+      - name: Perform tests
+        run: |
+          cargo test --      \
+            --test-threads=1 \
+            --nocapture      \
+            --color=always
