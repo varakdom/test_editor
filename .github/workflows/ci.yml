@@ -11,10 +11,10 @@ jobs:
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
 
     - name: Set up Rust
-      uses: actions/setup-rust@v1  # Remplacez v1 par la version que vous souhaitez utiliser
+      uses: actions/setup-rust@v2  # Remplacez v1 par la version que vous souhaitez utiliser
       with:
         profile: minimal
         toolchain: stable
