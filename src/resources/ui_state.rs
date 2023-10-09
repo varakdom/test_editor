@@ -5,29 +5,34 @@ use bevy::prelude::{World, Resource};
 use bevy_inspector_egui::bevy_inspector::hierarchy::SelectedEntities;
 use egui::Context;
 use egui_dock::{NodeIndex, Tree};
-use egui_extras::RetainedImage;
 use egui_gizmo::GizmoMode;
+use crate::async_systems::catalog_fetch_systems::AssetPreview;
 
 use crate::bv_gui::{EguiWindow, TabViewer};
 use crate::bv_gui::top_bar::TopBar;
-use crate::bv_gui::top_bar::transformer_drawer::TransformDrawer;
 use crate::bv_gui::InspectorSelection;
+use crate::bv_gui::top_bar::transformer_drawer::TransformDrawer;
 use crate::bv_gui::top_bar::project_drawer::ProjectDrawer;
+use crate::bv_gui::top_bar::help_drawer::HelpDrawer;
 
 pub struct Catalog {
     pub queue: VecDeque<AssetInfo>,
-    pub cache: Vec<RetainedImage>,
+    pub cache: Vec<AssetPreview>,
     pub nr_fetch: i32,
+    pub fetch_request: bool,
+    pub fetch_asset: Option<String>
 }
 
 pub struct AssetInfo {
     pub url: String,
-    //image: Option<RetainedImage>
+    pub name: String,
+    pub asset_url: String,
+    // image: Option<RetainedImage>
 }
 
 impl Catalog {
     fn new() -> Self {
-        Catalog { queue: VecDeque::new(), cache: vec![], nr_fetch: 0 }
+        Catalog { queue: VecDeque::new(), cache: vec![], nr_fetch: 0, fetch_request: false, fetch_asset: None }
     }
 }
 
@@ -40,7 +45,7 @@ impl ToolBox {
     pub fn new() -> Self {
         Self {
             gizmo_mode: GizmoMode::Translate,
-            project_path: "/home/gameboyadvance/Programs/Epitech/EIP/bv_test_project".to_string(),
+            project_path: "/home/gameboycolor/Projects/epitech/eip/bettervoxel_editor/assets".to_string(),
         }
     }
 }
@@ -56,6 +61,8 @@ pub struct UiState {
     pub toolbox: ToolBox
 }
 
+
+
 impl UiState {
     pub fn new() -> Self {
         let mut tree = Tree::new(vec![EguiWindow::GameView]);
@@ -70,10 +77,11 @@ impl UiState {
         // Always add drawers first !!
         top_bar.register_drawer("TransformDrawer".as_str(), TransformDrawer::new());
         top_bar.register_drawer("ProjectDrawer".as_str(), ProjectDrawer::new());
+        top_bar.register_drawer("HelpDrawer".as_str(), HelpDrawer::new());
 
         top_bar.add_section("Project".to_string(), vec!["ProjectDrawer".to_string()]);
         top_bar.add_section("Transform".to_string(), vec!["TransformDrawer".to_string(), "ProjectDrawer".to_string()]);
-        top_bar.add_section("Help".to_string(), vec![]);
+        top_bar.add_section("Help".to_string(), vec!["HelpDrawer".to_string()]);
         top_bar.add_section("Test".to_string(), vec!["TransformDrawer".to_string()]);
 
         Self {

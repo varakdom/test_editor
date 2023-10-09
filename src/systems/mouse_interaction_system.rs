@@ -3,7 +3,7 @@ use bevy_window::PrimaryWindow;
 use egui::Pos2;
 use bevy_mod_raycast::{Intersection, RaycastMethod, RaycastSource};
 
-use crate::resources::ui_state::UiState;
+use crate::{resources::ui_state::UiState, interactions::spawn_entity::spawn_cube, serialization::fileless_assets::FilelessAssets};
 
 
 #[derive(Reflect, Clone)]
@@ -41,6 +41,8 @@ pub fn mouse_left_click(
     query: Query<&Intersection<MyRaycastSet>>,
     primary_window: Query<&mut Window, With<PrimaryWindow>>,
     mouse: Res<Input<MouseButton>>,
+    common_assets: Res<FilelessAssets>,
+    mut commands: Commands
 ) {
     let Ok(window) = primary_window.get_single() else { return };
 
@@ -50,7 +52,7 @@ pub fn mouse_left_click(
                 for intersection in query.iter() {
                     if let Some(vec) = intersection.position() {
                         info!("Position: {:?}", vec);
-                        // spawn_cube(&mut commands, &mut meshes, &mut materials, vec );
+                        spawn_cube(&mut commands, &common_assets, vec );
                     }
                 }
             }

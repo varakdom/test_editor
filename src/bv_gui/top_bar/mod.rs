@@ -1,5 +1,6 @@
 pub mod transformer_drawer;
 pub mod project_drawer;
+pub mod help_drawer;
 
 use std::collections::HashMap;
 use egui::{Context, Ui, Vec2};

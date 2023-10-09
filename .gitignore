@@ -19,3 +19,6 @@ crates/Cargo.lock
 
 # IDE's
 .idea/
+
+# Our own
+BVconfig.json

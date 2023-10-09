@@ -14,7 +14,8 @@ use bevy_inspector_egui::bevy_inspector::{
 };
 
 use crate::bv_gui::gizmo_ui::draw_gizmo;
-use crate::resources::ui_state::{AssetInfo, Catalog, ToolBox};
+use crate::resources::ui_state::{Catalog, ToolBox};
+use crate::systems::scene_system::SpawnObject;
 
 #[derive(Debug)]
 pub enum EguiWindow {
@@ -68,30 +69,28 @@ impl egui_dock::TabViewer for TabViewer<'_> {
             EguiWindow::Animation => {},
             EguiWindow::Catalog => {
                 if ui.add(egui::Button::new("Refresh")).clicked() {
-                    //@todo fetch image information from Better Voxel API
-                    let tmp_fetched = vec![
-                        "https://i.ytimg.com/an/lcphuaOVGeE/12453724661110169088_mq.jpg?v=5f69b6e1",
-                        "https://mir-s3-cdn-cf.behance.net/project_modules/max_1200/4ba579120661385.60b63d726651d.png",
-                        "https://cdn.80.lv/api/upload/content/14/images/62b1a6e5a0ff8/widen_920x0.jpeg",
-                        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRjqhRetAZQ_oF3IWx8HqRBk1JKtfMcnI48TQ&usqp=CAU",
-                    ];
-                    for uri in tmp_fetched {
-                        self.catalog.queue.push_back(AssetInfo { url: uri.to_string() });
-                        self.catalog.nr_fetch += 1;
-                    }
-                    // fetch image
-                    //@todo fetch API
-                    // ui_state.catalog.get_image(&"https://s3.johanhelsing.studio/dump/favicon.png".to_string());
+                    self.catalog.fetch_request = true;
                 }
 
                 ui.horizontal(|ui| {
                     for img in &self.catalog.cache {
+                        ui.vertical(|ui| {
+                            ui.group(|ui| {
+                                let _btn = egui::ImageButton::new(
+                                    img.preview.texture_id(&self.ctx),
+                                    egui::Vec2{x: 50.0, y: 50.0},
+                                    // img.preview.size_vec2()
+                                ).ui(ui);
+
+                                if _btn.clicked() {
+                                    // self.catalog.fetch_asset = Some(img.asset_url.clone());
+                                    // "/assets/download"
+                                    self.world.spawn(SpawnObject { name: "chicken.vox".to_string() } );
+                                }
+                                ui.label(&img.name);
+                            });
+                        });
                         //@todo import asset to scene
-                        let _btn = egui::ImageButton::new(
-                            img.texture_id(&self.ctx),
-                            egui::Vec2{x: 200.0, y: 200.0},
-                            // img.size_vec2()
-                        ).ui(ui);
                     }
 
                     for _ in 0..self.catalog.nr_fetch {

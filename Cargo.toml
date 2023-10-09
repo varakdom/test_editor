@@ -17,10 +17,13 @@ bevy_asset = "0.10.1"
 bevy_debug_grid = "0.1"
 bevy_mod_raycast = "0.8.0"
 bevy_mod_picking = { version = "0.13.0", default-features = false, features = [
-    "selection", "backend_raycast", "backend_bevy_ui", "backend_rapier", "backend_sprite", "highlight"
+    "selection",
+    "backend_raycast",
+    "backend_bevy_ui",
+    "backend_rapier",
+    "backend_sprite",
+    "highlight",
 ] }
-bevy_vox_mesh = "0.7.1"
-bevy_vox = "0.7"
 # bevy_mod_picking = "0.13.0"
 # bevy_mod_picking = { version = "0.13.0", features=["backend_egui"] }
 
@@ -30,18 +33,23 @@ bevy_egui = "0.20.3"
 egui = "0.21.0"
 # egui = "0.22.0"
 egui-gizmo = "0.10.0"
+bevy_vox_mesh = "0.6.0"
 egui_dock = "0.5.0"
 egui_extras = { version = "0.21.0", features = ["svg", "image"] }
 
+
 # Misc
+webbrowser = "0.5.5"
 futures-lite = "1.13.0"
 ehttp = "0.3.0"
 image = { version = "0.24", default-features = false, features = [
     "jpeg",
     "png",
 ] }
-
-
+reqwest = { version = "0.11.18", features = ["blocking", "json"] }
+serde = "1.0.183"
+serde_json = "1.0"
+rfd = "0.12.0"
 
 [profile.dev.package."*"]
 opt-level = 3

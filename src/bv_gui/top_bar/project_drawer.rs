@@ -1,6 +1,5 @@
 use std::ffi::OsString;
 use std::fs;
-use bevy_reflect::GetPath;
 
 use egui::{Ui, Context};
 
@@ -21,6 +20,7 @@ impl ShowDrawer for ProjectDrawer {
     fn draw(&mut self, ui: &mut Ui, toolbox: &mut ToolBox, _ctx: &mut Context) {
         ui.horizontal(|ui| {
             if ui.button("Scan directory").clicked() {
+                println!("project path: {}", toolbox.project_path);
                 scan_dir(&toolbox.project_path, &mut self.files);
                 // scan dirs
                 for f in &self.files {
